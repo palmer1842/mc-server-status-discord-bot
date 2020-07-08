@@ -29,6 +29,7 @@ async def on_message(message):
             current_players = query.players.online
             max_players = query.players.max
             online_players = query.players.names
+            ping = str(server.ping())
 
             # return status and list of players
             if len(args) == 1:
@@ -47,6 +48,11 @@ async def on_message(message):
                                 response += ", " + real_names[player]
                     i += 1
                 await message.channel.send(response)
+
+            # return server ping
+            elif args[1] == "ping":
+                await message.channel.send("Server ping: " + ping + "ms")
+
         except:
             await message.channel.send("Server offline")
 
