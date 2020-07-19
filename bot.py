@@ -1,7 +1,15 @@
 import os
 import json
 import discord
+import logging
 from mcstatus import MinecraftServer
+
+# set up logger
+logger = logging.getLogger('discord')
+logger.setLevel(logging.INFO)
+handler = logging.FileHandler(filename='bot.log', encoding='utf-8', mode='a')
+handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s:%(message)s'))
+logger.addHandler(handler)
 
 client = discord.Client()
 bot_token = os.environ['DISCORD_TOKEN']
@@ -47,13 +55,21 @@ async def on_message(message):
                             else:
                                 response += ", " + real_names[player]
                     i += 1
+                logger.info("{0} entered command '{1}'. Bot Response: '{2}'."
+                            .format(message.author, message.content, response))
                 await message.channel.send(response)
 
             # return server ping
             elif args[1] == "ping":
-                await message.channel.send("Server ping: " + ping + "ms")
+                response = "Server ping: " + ping + "ms"
+                logger.info("{0} entered command '{1}'. Bot Response: '{2}'."
+                            .format(message.author, message.content, response))
+                await message.channel.send(response)
 
         except:
-            await message.channel.send("Server offline")
+            response = "Server Offline"
+            logger.info("{0} entered command '{1}'. Bot Response: '{2}'."
+                        .format(message.author, message.content, response))
+            await message.channel.send(response)
 
 client.run(bot_token)
